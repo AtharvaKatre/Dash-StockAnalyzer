@@ -1,0 +1,23 @@
+/* Dropdown */
+.VirtualizedSelectOption {
+    background-color: white;
+    color: black;
+}
+
+.VirtualizedSelectFocusedOption {
+    background-color: lightgrey;
+    color: black;
+}
+
+/* Scrollbars */
+*::-webkit-scrollbar {
+  width: 12px;               
+}
+*::-webkit-scrollbar-track {
+  background: #EDEFEB;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: darkslateblue;
+  border-radius: 20px;      
+  border: 3px solid #EDEFEB;
+}
