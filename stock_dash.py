@@ -18,6 +18,7 @@ BOOTSTRAP_ICONS = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/boots
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MATERIA, FONT_AWESOME, BOOTSTRAP_ICONS],
                 meta_tags=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0'}]
                 )
+server = app.server
 app.title = 'Stock Analyzer'
 
 
