@@ -8,9 +8,9 @@ import dash_table
 from dash.dependencies import Input, Output
 
 # -----------------------------------------Reading CSVs------------------------------------------------------------------
-df = pd.read_csv('assets/datasets/csv_23.csv')
-df2 = pd.read_csv('assets/datasets/csv1.csv')
-df3 = pd.read_csv('assets/datasets/csv4.csv')
+df = pd.read_csv('https://raw.githubusercontent.com/AtharvaKatre/Dash-StockAnalyzer/main/assets/datasets/csv_23.csv')
+df2 = pd.read_csv('https://raw.githubusercontent.com/AtharvaKatre/Dash-StockAnalyzer/main/assets/datasets/csv1.csv')
+df3 = pd.read_csv('https://raw.githubusercontent.com/AtharvaKatre/Dash-StockAnalyzer/main/assets/datasets/csv4.csv')
 
 # -----------------------------------------APP Definition---------------------------------------------------------------
 FONT_AWESOME = "https://use.fontawesome.com/releases/v5.7.2/css/all.css"
