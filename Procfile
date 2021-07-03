@@ -1,1 +1,1 @@
-web: gunicorn stock_dash.py:server
+web: gunicorn stock_dash:server
