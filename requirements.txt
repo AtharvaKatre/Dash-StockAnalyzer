@@ -10,6 +10,7 @@ dash-table==4.11.3
 Flask==2.0.1
 Flask-Compress==1.10.1
 future==0.18.2
+gunicorn
 itsdangerous==2.0.1
 Jinja2==3.0.1
 MarkupSafe==2.0.1
