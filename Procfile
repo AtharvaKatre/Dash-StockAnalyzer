@@ -1,1 +1,1 @@
-web:gunicorn stock_dash:server
+web: gunicorn stock_dash:server
