@@ -262,6 +262,7 @@ app.layout = dbc.Container([
             dbc.Col([price_card1], className='mt-3', xs=12, lg=5),
             dbc.Col([price_card2], className='mt-3', xs=12, lg=4),
         ], justify='center'),
+        html.Br(),
         dbc.Row([
             html.H5(className='rectangle ml-2', style={'width': '10px', 'backgroundColor': 'darkslateblue'}),
             dbc.Col(html.H5(html.B('100 Day Window'), id='row2-title'), xs=12, lg=3,
