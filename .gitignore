@@ -1,1 +1,4 @@
-dashvenv/
+dashvenv
+*.pyc
+.env
+.DS_Store
