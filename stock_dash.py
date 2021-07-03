@@ -21,28 +21,30 @@ app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MATERIA, FONT_AWESOME
 app.title = 'Stock Analyzer'
 server = app.server
 
+
 # -----------------------------------------Stock Price Chart------------------------------------------------------------
-def candle_chart(df,stock, fontcolor='black'):
-  df1 = df[df['stock']==stock].drop('Date', axis=1)
-  df1['Date'] = pd.to_datetime(df[df['stock'] == stock]['Date'])
-  fig = go.Figure(data=[go.Candlestick(x=df1['Date'],
-                open=df1['sma20'],
-                high=df1['upper'],
-                low=df1['lower'],
-                close=df1['close'])])
-  fig.update_xaxes(showspikes=True, spikesnap="cursor", spikemode="across")
-  fig.update_yaxes(showspikes=True, spikesnap="cursor", spikemode="across")
-  fig.update_layout(title='<b>{}'.format(stock),
-                    yaxis=dict(side='right', title='Price (USD)'),
-                    xaxis_rangeslider_visible=True,
-                    hovermode="x",
-                    paper_bgcolor='rgba(0,0,0,0)',
-                    plot_bgcolor='rgba(0,0,0,0)',
-                    margin=dict(t=40, b=15),
-                    font_color=fontcolor,
-                    template='plotly_white')
-  fig.update_xaxes(rangeslider_bgcolor='#CDCDCD')
-  return fig
+def candle_chart(df, stock, fontcolor='black'):
+    df1 = df[df['stock'] == stock].drop('Date', axis=1)
+    df1['Date'] = pd.to_datetime(df[df['stock'] == stock]['Date'])
+    fig = go.Figure(data=[go.Candlestick(x=df1['Date'],
+                                         open=df1['sma20'],
+                                         high=df1['upper'],
+                                         low=df1['lower'],
+                                         close=df1['close'])])
+    fig.update_xaxes(showspikes=True, spikesnap="cursor", spikemode="across")
+    fig.update_yaxes(showspikes=True, spikesnap="cursor", spikemode="across")
+    fig.update_layout(title='<b>{}'.format(stock),
+                      yaxis=dict(side='right', title='Price (USD)'),
+                      xaxis_rangeslider_visible=True,
+                      hovermode="x",
+                      paper_bgcolor='rgba(0,0,0,0)',
+                      plot_bgcolor='rgba(0,0,0,0)',
+                      margin=dict(t=40, b=15),
+                      font_color=fontcolor,
+                      template='plotly_white')
+    fig.update_xaxes(rangeslider_bgcolor='#CDCDCD')
+    return fig
+
 
 def price_chart(df, stock, fontcolor='black'):
     dff = df[df['stock'] == stock].drop('Date', axis=1)
@@ -58,7 +60,7 @@ def price_chart(df, stock, fontcolor='black'):
                       yaxis=dict(title='Price (USD)'),
                       xaxis_rangeslider_visible=True,
                       hovermode="x",
-                      margin=dict(t=40,b=15),
+                      margin=dict(t=40, b=15),
                       paper_bgcolor='rgba(0,0,0,0)',
                       plot_bgcolor='rgba(0,0,0,0)',
                       font_color=fontcolor,
@@ -66,48 +68,54 @@ def price_chart(df, stock, fontcolor='black'):
     fig.update_xaxes(rangeslider_bgcolor='#CDCDCD')
     return fig
 
+
 def row2tabledata(stock_name, candle):
     dff = df3[(df3['stock'] == stock_name) & (df3['window'] == '100day') & (df3['candle'] == candle)].drop(
         ['stock', 'window', 'candle'], axis=1).reset_index(drop=True)
-    dff.loc[len(dff.index)] = ['Total', round(dff['buyClose'].sum(),2), round(dff['sellOpen'].sum(),2)]
+    dff.loc[len(dff.index)] = ['Total', round(dff['buyClose'].sum(), 2), round(dff['sellOpen'].sum(), 2)]
     return dff
+
 
 def row3tabledata(stock_name, window):
     dff = df3[(df3['stock'] == stock_name) & (df3['window'] == window) & (df3['candle'] == 'day')].drop(
         ['stock', 'window', 'candle'], axis=1).reset_index(drop=True)
-    dff.loc[len(dff.index)] = ['Total', round(dff['buyClose'].sum(),2), round(dff['sellOpen'].sum(),2)]
+    dff.loc[len(dff.index)] = ['Total', round(dff['buyClose'].sum(), 2), round(dff['sellOpen'].sum(), 2)]
     return dff
+
+
 # ------------------------------------------APP Components---------------------------------------------------------------
 # theme switcher
 theme_switch = dbc.Checklist(
-                    options=[{"label": "🌙", "value": 1,}],
-                    value=[],
-                    id="theme switch",
-                    labelStyle={'font-size':'large',},
-                    switch=True,
-                )
+    options=[{"label": "🌙", "value": 1, }],
+    value=[],
+    id="theme switch",
+    labelStyle={'font-size': 'large', },
+    switch=True,
+)
 
-#dropdown
+# dropdown
 stock_dropdown = dcc.Dropdown(
-        id='stock-dropdown',
-        options=[{'label': i, 'value': i} for i in df['stock'].unique()],
-        value='ACC',
-        placeholder='Select Stock',
-        searchable=True,
-        clearable=True,
-        )
+    id='stock-dropdown',
+    options=[{'label': i, 'value': i} for i in df['stock'].unique()],
+    value='ACC',
+    placeholder='Select Stock',
+    searchable=True,
+    clearable=True,
+)
 
-#row 3 candle dropdown
+
+# row 3 candle dropdown
 def get_windowdropdown(id):
     window_dropdown = dcc.Dropdown(
-                id=id,
-                options= [{'label': i, 'value': i} for i in df3['window'].unique()],
-                placeholder='Select Window',
-                clearable=True,
-            )
+        id=id,
+        options=[{'label': i, 'value': i} for i in df3['window'].unique()],
+        placeholder='Select Window',
+        clearable=True,
+    )
     return window_dropdown
 
-#top banner
+
+# top banner
 top_block = dbc.Row([
     dbc.Col(html.H2([html.B('Stock Analyzer ', id='app-title'),
                      html.B(className="fas fa-chart-line", style={'color': 'orange'})],
@@ -117,28 +125,28 @@ top_block = dbc.Row([
     # dbc.Col(dbc.Row([theme_switch,html.H4(id='moon',className='fas fa-moon')],justify='right'),width={'offset':5},className='mt-3', xs=3),
 ])
 
-#chart card
+# chart card
 card_style = {}
 price_card1 = dbc.Card([
-    dcc.Graph(
+    dcc.Loading(dcc.Graph(
         id='price-chart1',
-        style={'height':250},
+        style={'height': 250},
         config={'displayModeBar': False, 'displaylogo': False}
-    )
+    ), color='orange')
 ], style=card_style, className='border border-dark')
 price_card2 = dbc.Card([
-    dcc.Graph(
+    dcc.Loading(dcc.Graph(
         id='price-chart2',
         style={'height': 250},
         config={'displayModeBar': False, 'displaylogo': False}
-    )
+    ), color='orange')
 ], style=card_style, className='border border-dark')
 
-#Row 1 Table
+# Row 1 Table
 table1 = dash_table.DataTable(
     id='row1-table1',
     data=[],
-    columns=[{"name": i, "id": i} for i in ['Metric','Value']],
+    columns=[{"name": i, "id": i} for i in ['Metric', 'Value']],
     style_header={
         'border': '1px solid black',
         'backgroundColor': 'cornflowerblue',
@@ -167,7 +175,8 @@ table1 = dash_table.DataTable(
     style_table={'height': '250px', 'overflowY': 'auto'}
 )
 
-#Row 2  & Row 3 Tables
+
+# Row 2  & Row 3 Tables
 def row2_3tables(id):
     table = dash_table.DataTable(
         id=id,
@@ -241,6 +250,7 @@ def row2_3tables(id):
     )
     return table
 
+
 # ------------------------------------------APP Layout-------------------------------------------------------------------
 app.layout = dbc.Container([
     top_block,
@@ -251,17 +261,21 @@ app.layout = dbc.Container([
             dbc.Col([table1], className='mt-3', xs=11, lg=3),
             dbc.Col([price_card1], className='mt-3', xs=12, lg=5),
             dbc.Col([price_card2], className='mt-3', xs=12, lg=4),
-        ],justify='center'),
+        ], justify='center'),
         dbc.Row([
             html.H5(className='rectangle ml-2', style={'width': '10px', 'backgroundColor': 'darkslateblue'}),
             dbc.Col(html.H5(html.B('100 Day Window'), id='row2-title'), xs=12, lg=3,
                     style={'padding': 10})
         ], className='mt-4'),
         dbc.Row([
-            dbc.Col([dbc.Row(html.P(html.B('1 Day'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table1'),lg=12))],xs=6, lg=3),
-            dbc.Col([dbc.Row(html.P(html.B('3 min'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table2'),lg=12))],xs=6, lg=3),
-            dbc.Col([dbc.Row(html.P(html.B('5 min'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table3'),lg=12))],xs=6, lg=3),
-            dbc.Col([dbc.Row(html.P(html.B('15 min'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table4'),lg=12))],xs=6, lg=3),
+            dbc.Col([dbc.Row(html.P(html.B('1 Day'), className='text-center'), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row2-table1'), lg=12))], xs=6, lg=3),
+            dbc.Col([dbc.Row(html.P(html.B('3 min'), className='text-center'), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row2-table2'), lg=12))], xs=6, lg=3),
+            dbc.Col([dbc.Row(html.P(html.B('5 min'), className='text-center'), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row2-table3'), lg=12))], xs=6, lg=3),
+            dbc.Col([dbc.Row(html.P(html.B('15 min'), className='text-center'), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row2-table4'), lg=12))], xs=6, lg=3),
         ]),
         dbc.Row([
             html.H5(className='rectangle ml-2', style={'width': '10px', 'backgroundColor': 'darkslateblue'}),
@@ -269,15 +283,20 @@ app.layout = dbc.Container([
                     style={'padding': 10})
         ], className='mt-4 mb-2'),
         dbc.Row([
-            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter1'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table1'),lg=12), className='mt-1')], xs=6, lg=3),
-            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter2'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table2'),lg=12), className='mt-1')], xs=6, lg=3),
-            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter3'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table3'),lg=12), className='mt-1')], xs=6, lg=3),
-            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter4'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table4'),lg=12), className='mt-1')], xs=6, lg=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter1'), lg=12), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row3-table1'), lg=12), className='mt-1')], xs=6, lg=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter2'), lg=12), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row3-table2'), lg=12), className='mt-1')], xs=6, lg=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter3'), lg=12), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row3-table3'), lg=12), className='mt-1')], xs=6, lg=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter4'), lg=12), justify='center'),
+                     dbc.Row(dbc.Col(row2_3tables(id='row3-table4'), lg=12), className='mt-1')], xs=6, lg=3),
         ], className='mb-2'),
     ], color='orange'),
 ], fluid=True)
 
-#-------------------------------------------APP Callbacks----------------------------------------------------------------
+
+# -------------------------------------------APP Callbacks----------------------------------------------------------------
 @app.callback(
     Output('price-chart1', 'figure'),
     Output('price-chart2', 'figure'),
@@ -295,36 +314,42 @@ app.layout = dbc.Container([
     Input('window-filter2', 'value'),
     Input('window-filter3', 'value'),
     Input('window-filter4', 'value'),
-    Input("theme switch","value")
+    Input("theme switch", "value")
 )
 def update_graph(stock_name, window1, window2, window3, window4, theme):
     if theme == [1]:
-        fontcolor='white'
+        fontcolor = 'white'
     else:
-        fontcolor='black'
+        fontcolor = 'black'
 
     if stock_name is not None:
-        t_df1 = df2[df2['stock']==stock_name].T.reset_index()
-        t_df1.columns = ["Metric","Value"]
-        
-        return (candle_chart(df, stock_name, fontcolor), price_chart(df, stock_name, fontcolor), t_df1.to_dict('records'),
-                # row 2 tables
-                row2tabledata(stock_name,'day').to_dict('records'),
-                row2tabledata(stock_name,'3minute').to_dict('records'),
-                row2tabledata(stock_name,'5minute').to_dict('records'),
-                row2tabledata(stock_name,'15minute').to_dict('records'),
-                # row 3 tables
-                row3tabledata(stock_name,window1).to_dict('records'),
-                row3tabledata(stock_name,window2).to_dict('records'),
-                row3tabledata(stock_name,window3).to_dict('records'),
-                row3tabledata(stock_name,window4).to_dict('records'),
-                )
+        t_df1 = df2[df2['stock'] == stock_name].T.reset_index()
+        t_df1.columns = ["Metric", "Value"]
+
+        return (
+        candle_chart(df, stock_name, fontcolor), price_chart(df, stock_name, fontcolor), t_df1.to_dict('records'),
+        # row 2 tables
+        row2tabledata(stock_name, 'day').to_dict('records'),
+        row2tabledata(stock_name, '3minute').to_dict('records'),
+        row2tabledata(stock_name, '5minute').to_dict('records'),
+        row2tabledata(stock_name, '15minute').to_dict('records'),
+        # row 3 tables
+        row3tabledata(stock_name, window1).to_dict('records'),
+        row3tabledata(stock_name, window2).to_dict('records'),
+        row3tabledata(stock_name, window3).to_dict('records'),
+        row3tabledata(stock_name, window4).to_dict('records'),
+        )
     else:
-        t_df1 = df2[df2['stock']=='ACC'].T.reset_index()
-        t_df1.columns = ["Metric","Value"]
+        t_df1 = df2[df2['stock'] == 'ACC'].T.reset_index()
+        t_df1.columns = ["Metric", "Value"]
         t_df1['Value'] = '--'
 
-        return {'layout': {'title': 'No stock selected', 'plot_bgcolor': 'rgba(0,0,0,0)', 'paper_bgcolor': 'rgba(0,0,0,0)'}}, {'layout': {'title': 'No stock selected', 'plot_bgcolor': 'rgba(0,0,0,0)', 'paper_bgcolor': 'rgba(0,0,0,0)'}}, t_df1.to_dict('records'), [], [], [], [], [], [], [], []
+        return {'layout': {'title': 'No stock selected', 'plot_bgcolor': 'rgba(0,0,0,0)',
+                           'paper_bgcolor': 'rgba(0,0,0,0)'}}, {
+                   'layout': {'title': 'No stock selected', 'plot_bgcolor': 'rgba(0,0,0,0)',
+                              'paper_bgcolor': 'rgba(0,0,0,0)'}}, t_df1.to_dict(
+            'records'), [], [], [], [], [], [], [], []
+
 
 # window filter update dropdown values
 @app.callback(
@@ -382,7 +407,8 @@ def update_dropdown(w1, w2, w3, w4):
     for i in selected:
         option4.remove(i)
 
-    return [{'label': i, 'value': i} for i in option1], [{'label': i, 'value': i} for i in option2], [{'label': i, 'value': i} for i in option3], [{'label': i, 'value': i} for i in option4]
+    return [{'label': i, 'value': i} for i in option1], [{'label': i, 'value': i} for i in option2], [
+        {'label': i, 'value': i} for i in option3], [{'label': i, 'value': i} for i in option4]
 
 
 # theme switcher
@@ -407,24 +433,23 @@ app.clientside_callback(
     Input("theme switch", "value"),
 )
 
+
 @app.callback(
-    # Output("moon","style"),
-    Output("app-title","style"),
-    Output("row2-title","style"),
-    Output("row3-title","style"),
-    Input("theme switch","value")
+    Output("app-title", "style"),
+    Output("row2-title", "style"),
+    Output("row3-title", "style"),
+    Input("theme switch", "value")
 )
 def change_color(value):
     if value == [1]:
-        icon_color = {'color':'yellow'}
-        text_color = {'color':'white'}
+        text_color = {'color': 'white'}
         rowtitle_style = {'text-decoration': 'underline', 'color': 'white'}
         return text_color, rowtitle_style, rowtitle_style
     else:
-        icon_color = {'color': 'black'}
         text_color = {'color': 'black'}
         rowtitle_style = {'text-decoration': 'underline', 'color': 'black'}
         return text_color, rowtitle_style, rowtitle_style
+
 
 if __name__ == '__main__':
     app.run_server(debug=False, port=8008)
