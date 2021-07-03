@@ -16,7 +16,8 @@ df3 = pd.read_csv('assets/datasets/csv4.csv')
 FONT_AWESOME = "https://use.fontawesome.com/releases/v5.7.2/css/all.css"
 BOOTSTRAP_ICONS = "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.MATERIA, FONT_AWESOME, BOOTSTRAP_ICONS],
-                meta_tags=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0'}])
+                meta_tags=[{'name': 'viewport', 'content': 'width=device-width, initial-scale=1.0'}]
+                )
 app.title = 'Stock Analyzer'
 
 
@@ -79,11 +80,11 @@ def row3tabledata(stock_name, window):
 # ------------------------------------------APP Components---------------------------------------------------------------
 # theme switcher
 theme_switch = dbc.Checklist(
-                    options=[{"label": "", "value": 1,}],
+                    options=[{"label": "🌙", "value": 1,}],
                     value=[],
                     id="theme switch",
-                    inline=True,
-                    switch=True
+                    labelStyle={'font-size':'large',},
+                    switch=True,
                 )
 
 #dropdown
@@ -108,11 +109,12 @@ def get_windowdropdown(id):
 
 #top banner
 top_block = dbc.Row([
-    dbc.Col(html.H1([html.B('Stock Analyzer ', id='app-title'),
+    dbc.Col(html.H2([html.B('Stock Analyzer ', id='app-title'),
                      html.B(className="fas fa-chart-line", style={'color': 'orange'})],
-                    className='mt-2 ml-2'), width=4),
-    dbc.Col(stock_dropdown,width=2, className='mt-3'),
-    dbc.Col(dbc.Row([theme_switch,html.H4(id='moon',className='fas fa-moon')]),width={'offset':5},className='mt-3'),
+                    className='mt-2'), width=4, xs=9, lg=10),
+    dbc.Col(theme_switch, className='mt-3', xs=1),
+    # dbc.Col(html.H4(id='moon',className='fas fa-moon mt-3 ml-1')),
+    # dbc.Col(dbc.Row([theme_switch,html.H4(id='moon',className='fas fa-moon')],justify='right'),width={'offset':5},className='mt-3', xs=3),
 ])
 
 #chart card
@@ -242,48 +244,36 @@ def row2_3tables(id):
 # ------------------------------------------APP Layout-------------------------------------------------------------------
 app.layout = dbc.Container([
     top_block,
+    dbc.Row(dbc.Col(stock_dropdown, width=2, className='mt-3', xs=5, lg=2)),
     html.Div(id="blank_output"),
-    html.Br(),
     dcc.Loading([
         dbc.Row([
-            dbc.Col([table1], width=3),
-            dbc.Col([price_card1], width=5),
-            dbc.Col([price_card2], width=4),
+            dbc.Col([table1], className='mt-3', xs=11, lg=3),
+            dbc.Col([price_card1], className='mt-3', xs=12, lg=5),
+            dbc.Col([price_card2], className='mt-3', xs=12, lg=4),
         ],justify='center'),
         dbc.Row([
             html.H5(className='rectangle ml-2', style={'width': '10px', 'backgroundColor': 'darkslateblue'}),
-            dbc.Col(html.H5(html.B('100 Day Window'), id='row2-title'), width=3,
+            dbc.Col(html.H5(html.B('100 Day Window'), id='row2-title'), xs=12, lg=3,
                     style={'padding': 10})
         ], className='mt-4'),
         dbc.Row([
-            dbc.Col([html.P(html.B('1 Day'), className='text-center')],width=3),
-            dbc.Col([html.P(html.B('3 min'), className='text-center')],width=3),
-            dbc.Col([html.P(html.B('5 min'), className='text-center')],width=3),
-            dbc.Col([html.P(html.B('15 min'), className='text-center')],width=3),
+            dbc.Col([dbc.Row(html.P(html.B('1 Day'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table1'),lg=12))],xs=6, lg=3),
+            dbc.Col([dbc.Row(html.P(html.B('3 min'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table2'),lg=12))],xs=6, lg=3),
+            dbc.Col([dbc.Row(html.P(html.B('5 min'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table3'),lg=12))],xs=6, lg=3),
+            dbc.Col([dbc.Row(html.P(html.B('15 min'), className='text-center'),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row2-table4'),lg=12))],xs=6, lg=3),
         ]),
         dbc.Row([
-            dbc.Col([row2_3tables(id='row2-table1')], width=3),
-            dbc.Col([row2_3tables(id='row2-table2')], width=3),
-            dbc.Col([row2_3tables(id='row2-table3')], width=3),
-            dbc.Col([row2_3tables(id='row2-table4')], width=3),
-        ], style={'height':'230px'}),
-        dbc.Row([
             html.H5(className='rectangle ml-2', style={'width': '10px', 'backgroundColor': 'darkslateblue'}),
-            dbc.Col(html.H5(html.B('Compare Window'), id='row3-title'), width=3,
+            dbc.Col(html.H5(html.B('Compare Window'), id='row3-title'), xs=12, lg=3,
                     style={'padding': 10})
         ], className='mt-4 mb-2'),
         dbc.Row([
-            dbc.Col([get_windowdropdown(id='window-filter1')], width=3),
-            dbc.Col([get_windowdropdown(id='window-filter2')], width=3),
-            dbc.Col([get_windowdropdown(id='window-filter3')], width=3),
-            dbc.Col([get_windowdropdown(id='window-filter4')], width=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter1'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table1'),lg=12), className='mt-1')], xs=6, lg=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter2'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table2'),lg=12), className='mt-1')], xs=6, lg=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter3'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table3'),lg=12), className='mt-1')], xs=6, lg=3),
+            dbc.Col([dbc.Row(dbc.Col(get_windowdropdown(id='window-filter4'),lg=12),justify='center'),dbc.Row(dbc.Col(row2_3tables(id='row3-table4'),lg=12), className='mt-1')], xs=6, lg=3),
         ], className='mb-2'),
-        dbc.Row([
-            dbc.Col([row2_3tables(id='row3-table1')], width=3),
-            dbc.Col([row2_3tables(id='row3-table2')], width=3),
-            dbc.Col([row2_3tables(id='row3-table3')], width=3),
-            dbc.Col([row2_3tables(id='row3-table4')], width=3),
-        ]),
     ], color='orange'),
 ], fluid=True)
 
@@ -418,7 +408,7 @@ app.clientside_callback(
 )
 
 @app.callback(
-    Output("moon","style"),
+    # Output("moon","style"),
     Output("app-title","style"),
     Output("row2-title","style"),
     Output("row3-title","style"),
@@ -429,12 +419,12 @@ def change_color(value):
         icon_color = {'color':'yellow'}
         text_color = {'color':'white'}
         rowtitle_style = {'text-decoration': 'underline', 'color': 'white'}
-        return icon_color, text_color, rowtitle_style, rowtitle_style
+        return text_color, rowtitle_style, rowtitle_style
     else:
         icon_color = {'color': 'black'}
         text_color = {'color': 'black'}
         rowtitle_style = {'text-decoration': 'underline', 'color': 'black'}
-        return icon_color, text_color, rowtitle_style, rowtitle_style
+        return text_color, rowtitle_style, rowtitle_style
 
 if __name__ == '__main__':
     app.run_server(debug=False, port=8008)
