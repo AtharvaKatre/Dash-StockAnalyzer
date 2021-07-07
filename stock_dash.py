@@ -250,6 +250,11 @@ def row2_3tables(id):
     )
     return table
 
+footer = html.Div([
+    html.H5(['Developed by ',html.A('Atharva Katre', href='https://www.linkedin.com/in/atharva-katre-563639177/', target='_blank')], className='text-center'),
+    html.H5([html.A('Source Code',href='https://github.com/AtharvaKatre/Dash-StockAnalyzer',target='_blank')], className='text-center')
+])
+
 
 # ------------------------------------------APP Layout-------------------------------------------------------------------
 app.layout = dbc.Container([
@@ -294,6 +299,7 @@ app.layout = dbc.Container([
                      dbc.Row(dbc.Col(row2_3tables(id='row3-table4'), lg=12), className='mt-1')], xs=6, lg=3),
         ], className='mb-2'),
     ], color='orange'),
+    footer
 ], fluid=True)
 
 
